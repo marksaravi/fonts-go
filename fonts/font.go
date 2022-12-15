@@ -1,5 +1,11 @@
 package fonts
 
+type FontInfo struct {
+	LineHeight       int
+	YOffsetAboveLine int
+	YOffsetBelowLine int
+}
+
 type Glyph struct {
 	BitmapOffset int ///< Pointer into GFXfont->bitmap
 	Width        int ///< Bitmap dimensions in pixels
@@ -9,8 +15,8 @@ type Glyph struct {
 	YOffset      int ///< Y dist from cursor pos to UL corner
 }
 type BitmapFont struct {
-	Bitmap    []byte
-	Glyphs    []Glyph
+	Bitmap []byte
+	Glyphs []Glyph
 }
 type MatrixFont struct {
 	Data          []byte
@@ -23,3 +29,25 @@ type MatrixFont struct {
 // font := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x00, 0x1F, 0x00, 0x1F, 0x00,
 // 	0x1F, 0x00, 0x3B, 0x80, 0x3B, 0x80, 0x71, 0x80, 0x7F, 0xC0, 0x71, 0xC0, 0xE0, 0xE0, 0xE0, 0xE0,
 // 	0xE0, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+func (f *BitmapFont) GetInfo() FontInfo {
+	YOffsetAboveLine := 100000
+	YOffsetBelowLine := -100000
+	for _, g := range f.Glyphs {
+		if YOffsetAboveLine > g.YOffset {
+			YOffsetAboveLine = g.YOffset
+		}
+		y := g.Height + g.YOffset
+		if YOffsetBelowLine < y {
+			YOffsetBelowLine = y
+		}
+	}
+
+	LineHeight := YOffsetBelowLine - YOffsetAboveLine
+	YOffsetAboveLine = -YOffsetAboveLine
+	return FontInfo{
+		LineHeight:       LineHeight,
+		YOffsetAboveLine: YOffsetAboveLine,
+		YOffsetBelowLine: YOffsetBelowLine,
+	}
+}

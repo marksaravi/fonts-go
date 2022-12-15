@@ -5,6 +5,7 @@ var Font16 MatrixFont = MatrixFont{
 	Width:         11, /* Width */
 	Height:        16, /* Height */
 	LetterSpacing: 0,
+	scale:         1,
 }
 var font16 []byte = []byte{
 	// @0 ' ' (11 pixels wide)

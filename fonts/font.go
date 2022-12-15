@@ -19,14 +19,14 @@ type Glyph struct {
 type BitmapFont struct {
 	Bitmap []byte
 	Glyphs []Glyph
-	Scale  int
+	scale  int
 }
 type MatrixFont struct {
 	Data          []byte
 	Width         int
 	Height        int
 	LetterSpacing int
-	Scale         int
+	scale         int
 }
 
 //16x21 A
@@ -60,6 +60,10 @@ func (f *BitmapFont) SetScale(scale int) error {
 	if scale < 1 || scale > 5 {
 		return fmt.Errorf("scale must be >=1 and <=5")
 	}
-	f.Scale = scale
+	f.scale = scale
 	return nil
+}
+
+func (f *BitmapFont) Scale() int {
+	return f.scale
 }
